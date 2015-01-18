@@ -1,9 +1,4 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  html_document:
-    keep_md: yes
----
+# Reproducible Research: Peer Assessment 1
  
 This is the assignment for the first Peer Assessment for Coursera Reproducible Research  
 Made by Peter van Gastel  
@@ -42,14 +37,13 @@ dataset.
 Because I have the Dutch version of Windows I have to change the local time and date format to English.  
 And I use ggplot2 for some plots so I have to load the library ggplot2.  
 <br>
-```{r Loading libraries and setting environment, results="hide"}
 
+```r
 # Set local time and date format to English
 Sys.setlocale("LC_TIME", "English")
 
 # load library ggplot2
 library(ggplot2)
-
 ```
 <br>
  
@@ -58,10 +52,10 @@ library(ggplot2)
 I first downloaded the file [activity.zip](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip) manualy from the course web site and unzipped it with pkunzip in my workingdirectory.  
 Then I read the file in a dataframe with read.csv
 <br>
-```{r Loading and preprocessing the data}
+
+```r
 # read the file in dataframe ActData
 ActData <- read.csv("activity.csv", sep = ",")
-
 ```
 <br>
  
@@ -72,7 +66,8 @@ Plot a histogram of the total number of steps taken each day as requested.
 Plot a histogram that shows the distribution.  
 Then I calculate the mean and median total steps per day.  
 <br>
-```{r, comment=""}
+
+```r
 # create a new dataframe with the sum of steps for each day
 SumAllDays <- aggregate(ActData$steps, list(ActData$date), sum)
 colnames(SumAllDays) <- c("date", "totalSteps")
@@ -86,26 +81,31 @@ barplot(SumAllDays$totalSteps,
         ylab = "total steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
+
 As we can see there are a few days without data.
 And some days with a very low number of steps.  
 Let's look at the distribution.  
 <br>
 
-```{r, comment = ""}
+
+```r
 # plot histogram that shows the distribution.
 hist(SumAllDays$totalSteps,
      col  = "red",
      main = "Distribution of total number of steps taken per day",
      xlab = "total number of steps per day",
      ylab = "days")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 <br>
 **Q.** What is the mean and median total number of steps taken per day.
 <br>
 
-```{r, comment=""}
+
+```r
 # remove days with no data
 SumAllDays <- na.omit(SumAllDays)
 
@@ -114,18 +114,21 @@ MeanStepsDay <- round(mean(SumAllDays$totalStep))
 MedianStepsDay <- round(median(SumAllDays$totalStep))
 ```
 
-```{r, comment="", echo=FALSE}
-# print Mean and Median steps taken per day
-cat(paste("The mean total number of steps taken per day is:", MeanStepsDay))
-cat(paste("The median total number of steps taken per day is:", MedianStepsDay))
+
+```
+The mean total number of steps taken per day is: 10766
+```
+
+```
+The median total number of steps taken per day is: 10765
 ```
 <br>  
  
 ## What is the average daily activity pattern?
 For this question I calculate the mean of steps for each interval and show the results in a plot.   
 <br>
-```{r}
 
+```r
 # remove days with no data
 ActDataNNa <- na.omit(ActData)
 
@@ -146,22 +149,27 @@ P <- P + theme(plot.title = element_text(size = rel(2), colour = "black"))
 P <- P + theme(axis.text  = element_text(size = 14),
                axis.title = element_text(size = 14, face = "bold")) 
 print(P)
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 <br>
 **Q.** Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 <br>
-```{r, comment=""}
+
+```r
 # which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 MaxSteps <- max(MeanStepsInterval$steps)
 MaxInterval <- MeanStepsInterval[(MeanStepsInterval$steps == MaxSteps),"interval"]
 ```
 
-```{r, comment="", echo=FALSE}
-# print interval with maximum number of steps
-cat(paste("The interval with maximum number of steps is:", MaxInterval))
-cat(paste("The maximum number of steps is:", round(MaxSteps)))
+
+```
+The interval with maximum number of steps is: 835
+```
+
+```
+The maximum number of steps is: 206
 ```
 <br>
 
@@ -169,23 +177,23 @@ cat(paste("The maximum number of steps is:", round(MaxSteps)))
 **Q.** What is the total number of missing values (rows) in the dataset. 
 <br>
 
-```{r}
+
+```r
 # calculate and report the total number of missing values (rows with NA) in the dataset
 MissingVal <- sum(!complete.cases(ActData))
-
 ```
 
-```{r, comment="", echo=FALSE}
-# print the total number of missing values (rows) in the dataset
-cat(paste("The total number of missing values (rows) in the dataset is:", MissingVal))
 
+```
+The total number of missing values (rows) in the dataset is: 2304
 ```
 <br>
 
 Next I insert a number of steps in all of the missing values in the dataset and create a new dataset.
 I will use the above calculated means for the 5-minute intervals as input for the missing values.
 
-```{r}
+
+```r
 # create a new dataset that is equal to the original dataset but with the missing data filled in 
 # copy Activity dataframe to ActData2 
 ActData2 <- ActData
@@ -198,13 +206,13 @@ Stepfiller <- rep(MeanInterval$steps, 61)
 
 # replace NAs in steps with calculated means for the 5-minute intervals
 ActData2$steps[MissingSteps] <- round(Stepfiller[MissingSteps])
-
 ```
 <br>
 
 Then I plot a new histogram of the total number of steps taken each day and calculate the new mean and median total number of steps taken per day. 
 
-```{r, comment=""}
+
+```r
 # create a new dataframe with the sum of steps for each day
 SumAllDays2 <- aggregate(ActData2$steps, list(ActData2$date), sum)
 colnames(SumAllDays2) <- c("date", "totalSteps")
@@ -218,22 +226,26 @@ barplot(SumAllDays2$totalSteps,
         ylab = "total steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+
 As we can see there are a no more days without data. But still some days with a very low number of steps.  
 
 **Q.** Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r, comment=""}
 
+```r
 # calculate mean and round result
 MeanStepsDay2<- round(mean(SumAllDays2$totalStep))
 MedianStepsDay2 <- round(median(SumAllDays2$totalStep))
-
 ```
 
-```{r, comment="", echo=FALSE}
-# print mean steps taken per day
-cat(paste("The mean total number of steps taken per day was:", MeanStepsDay, "and is now:", MeanStepsDay2))
-cat(paste("The median total number of steps taken per day was:", MedianStepsDay, "and is now:", MedianStepsDay2))
+
+```
+The mean total number of steps taken per day was: 10766 and is now: 10766
+```
+
+```
+The median total number of steps taken per day was: 10765 and is now: 10762
 ```
 
 As we can see the new median differs slightly from the first value but the mean is still the same.  
@@ -245,7 +257,8 @@ If I don't use rounded numbers than the median would be closer to the mean.
 For this part I need to create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.  
 And make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)  
 <br>
-```{r}
+
+```r
 # Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" 
 # indicating whether a given date is a weekday or weekend day.
 
@@ -278,6 +291,8 @@ P <- P + labs(title = "Average daily activity pattern for weekdays and weekend",
 P <- P + theme_bw()
 print(P)
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-14-1.png) 
 <br>
 
 As we can see, there is a clear difference between the activity pattern for weekdays and weekends.  
