@@ -202,7 +202,7 @@ ActData2 <- ActData
 MissingSteps <- is.na(ActData2$steps)
 
 # create a fillervector with calculated means for the 5-minute intervals per day (dataframe contains 61 days)
-Stepfiller <- rep(MeanInterval$steps, 61) 
+Stepfiller <- rep(MeanStepsInterval$steps, 61) 
 
 # replace NAs in steps with calculated means for the 5-minute intervals
 ActData2$steps[MissingSteps] <- round(Stepfiller[MissingSteps])
@@ -263,7 +263,7 @@ And make a panel plot containing a time series plot of the 5-minute interval (x-
 # indicating whether a given date is a weekday or weekend day.
 
 # Define weekend days
-weekend <- c("Satuday", "Sunday")
+weekend <- c("Saturday", "Sunday")
 
 # Define a function to determine whether the day is a weekend or weekday
 WtKindOfDay <- function(date) {
